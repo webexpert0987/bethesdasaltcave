@@ -103,9 +103,7 @@ export default function SaltCaveSection() {
             {/* Your Saved Button Style */}
             <Link
               href="#"
-              className="bg-[#804f33] hover:bg-[#1f2a50] transition-all duration-300 
-              px-12 py-5 font-semibold rounded-full 
-              font-roboto inline-block text-white"
+              className="bg-primary hover:bg-primary-dark transition-all duration-300 px-12 py-5 font-semibold rounded-full inline-block text-white"
             >
               Learn More
             </Link>

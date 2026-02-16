@@ -57,3 +57,24 @@ nav button {
   font-weight: 500;
 
 }
+span.swiper-pagination-bullet.swiper-pagination-bullet-active {
+    background: #804f33 !important;
+}
+.services-swiper .swiper-pagination {
+  margin-top: 10px;
+  position: relative;
+}
+
+.services-swiper .swiper-pagination-bullet {
+  width: 10px;
+  height: 10px;
+  background: #ccc;
+  opacity: 1;
+}
+
+.services-swiper .swiper-pagination-bullet-active {
+  background: #000;
+  width: 24px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}

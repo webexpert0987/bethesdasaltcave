@@ -57,9 +57,7 @@ export default function WelcomeSection() {
         <div className="mt-12">
           <a
             href="/about"
-            className="bg-[#804f33] hover:bg-[#1f2a50] transition-all duration-300 
-          px-12 py-5 font-semibold rounded-full 
-          font-roboto inline-block text-white"
+            className="border-2 border-white text-white hover:bg-white hover:text-[#804f33] transition-all duration-300 px-12 py-5 font-semibold rounded-full font-roboto inline-block"
           >
             About our Cave & HaloTherapy
           </a>

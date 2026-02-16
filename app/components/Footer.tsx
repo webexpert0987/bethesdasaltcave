@@ -12,7 +12,7 @@ export default function Footer() {
       {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black/80"></div>
 
-      <div className="relative max-w-7xl mx-auto px-6 py-20 grid md:grid-cols-4 gap-12">
+      <div className="relative max-w-7xl mx-auto py-20 grid md:grid-cols-4 gap-12">
 
         {/* Column 1 - Logo + Contact */}
         <div>

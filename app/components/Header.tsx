@@ -88,7 +88,7 @@ export default function Header() {
               />
             </div>
 
-            <Link href="#">Our Story</Link>
+            <Link href="/our-story">Our Story</Link>
 
             {/* RIGHT SIDE BUTTONS */}
             <div className="flex items-center gap-4 ml-4">
