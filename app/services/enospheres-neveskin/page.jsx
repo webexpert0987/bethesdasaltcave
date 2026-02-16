@@ -1,23 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import CtaSection from "./CtaSection";
+import Link from "next/link";
 
 
 export default function EnospheresNeveskinPage() {
   const [open, setOpen] = useState(false);
-  const [widgetId, setWidgetId] = useState("8148248df58"); // Default widget ID
-
-  // Dynamically load Mindbody script only when popup opens
-  useEffect(() => {
-    if (open) {
-      const script = document.createElement("script");
-      script.src = "https://brandedweb.mindbodyonline.com/embed/widget.js";
-      script.async = true;
-      document.body.appendChild(script);
-    }
-  }, [open, widgetId]);
+  const [iframeSrc, setIframeSrc] = useState(
+    "https://brandedweb-next.mindbodyonline.com/components/widgets/appointments/view/8148248df58/services"
+  );
 
   // Example sub-services
   const subServices = [
@@ -35,7 +28,7 @@ export default function EnospheresNeveskinPage() {
       desc: "Advanced skin rejuvenation and hydration session.",
       duration: "45 mins",
       price: "$90",
-      widgetId: "8148240df58",
+      widgetId: "8148248df58",
     },
     {
       id: 3,
@@ -43,7 +36,7 @@ export default function EnospheresNeveskinPage() {
       desc: "Quick session for targeted problem areas.",
       duration: "30 mins",
       price: "$60",
-      widgetId: "8148244df58",
+      widgetId: "8148248df58",
     },
   ];
 
@@ -65,6 +58,10 @@ export default function EnospheresNeveskinPage() {
     },
   ];
 
+  // Helper to get iframe src from widgetId
+  const getIframeSrc = (widgetId) =>
+    `https://brandedweb-next.mindbodyonline.com/components/widgets/appointments/view/${widgetId}/services`;
+
   return (
     <>
       {/* HERO */}
@@ -80,7 +77,7 @@ export default function EnospheresNeveskinPage() {
           <div className="mt-10">
             <button
               onClick={() => {
-                setWidgetId("8148248df58");
+                setIframeSrc(getIframeSrc("8148248df58"));
                 setOpen(true);
               }}
               className="bg-primary hover:bg-primary-dark transition-all duration-300 px-12 py-5 font-semibold rounded-full inline-block text-white"
@@ -147,9 +144,7 @@ export default function EnospheresNeveskinPage() {
                 className="bg-white p-8 rounded-2xl shadow-md flex flex-col justify-between"
               >
                 <div>
-                  <h3 className="text-xl font-semibold mb-2">
-                    {service.name}
-                  </h3>
+                  <h3 className="text-xl font-semibold mb-2">{service.name}</h3>
                   <p className="text-gray-600 mb-4">{service.desc}</p>
                   <p className="text-gray-500 text-sm">
                     Duration: {service.duration}
@@ -158,7 +153,7 @@ export default function EnospheresNeveskinPage() {
                 </div>
                 <button
                   onClick={() => {
-                    setWidgetId(service.widgetId);
+                    setIframeSrc(getIframeSrc(service.widgetId));
                     setOpen(true);
                   }}
                   className="bg-primary hover:bg-primary-dark transition-all duration-300 px-8 py-3 font-semibold rounded-full inline-block text-white mt-4"
@@ -198,7 +193,7 @@ export default function EnospheresNeveskinPage() {
                 <p className="text-gray-500 mb-4">{person.title}</p>
                 <button
                   onClick={() => {
-                    setWidgetId(person.widgetId);
+                    setIframeSrc(getIframeSrc(person.widgetId));
                     setOpen(true);
                   }}
                   className="bg-primary hover:bg-primary-dark transition-all duration-300 px-8 py-3 font-semibold rounded-full inline-block text-white"
@@ -212,16 +207,41 @@ export default function EnospheresNeveskinPage() {
       </section>
 
       {/* FINAL CTA */}
+    
+      <section className="bg-primary py-10 px-6">
+            <div className="max-w-7xl mx-auto">
       
-      <CtaSection
-        title="Ready to Experience Enosphères & Neveskin?"
-        desc="Book your session today and take the first step towards a more sculpted, toned, and rejuvenated you."
-        buttonText="Book Now"
-        onClick={() => {
-          setWidgetId("8148248df58");
-          setOpen(true);
-        }}
-      />
+              <div className="flex flex-col lg:flex-row items-center justify-between gap-10">
+      
+                {/* LEFT SIDE */}
+                <div className="max-w-2xl text-center lg:text-left">
+                  <h2 className="text-3xl md:text-4xl font-semibold text-white mb-4">
+                    Ready to Relax & Rejuvenate?
+                  </h2>
+      
+                  <p className="text-white leading-relaxed">
+                    Experience ultimate wellness and serenity with our premium spa
+                    treatments. Book your appointment today and let us take care of
+                    your mind and body.
+                  </p>
+                </div>
+      
+                {/* RIGHT SIDE BUTTONS */}
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <button
+                  onClick={() => {
+                  setIframeSrc(getIframeSrc("8148248df58"));
+                  setOpen(true);
+                }}
+                    
+                    className="border-2 border-white text-white hover:bg-white hover:text-[#804f33] transition-all duration-300 px-12 py-5 font-semibold rounded-full font-roboto inline-block"
+                  >
+                    Book Appointment
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
 
       {/* BOOKING MODAL */}
       {open && (
@@ -235,12 +255,14 @@ export default function EnospheresNeveskinPage() {
               ✕
             </button>
             <h3 className="text-2xl font-semibold mb-6">Book Your Session</h3>
-            {/* Mindbody Widget */}
-            <div
-              className="mindbody-widget"
-              data-widget-type="Appointments"
-              data-widget-id={widgetId}
-            ></div>
+            {/* Iframe Widget */}
+            <iframe
+              src={iframeSrc}
+              className="w-full"
+              style={{ height: "500px", border: "none" }}
+              allow="payment"
+              scrolling="yes"
+            ></iframe>
           </div>
         </div>
       )}

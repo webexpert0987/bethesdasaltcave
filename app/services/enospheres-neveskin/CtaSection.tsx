@@ -23,7 +23,7 @@ const CtaSection = () => {
           {/* RIGHT SIDE BUTTONS */}
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
-              href="#"
+              href=""
               className="border-2 border-white text-white hover:bg-white hover:text-[#804f33] transition-all duration-300 px-12 py-5 font-semibold rounded-full font-roboto inline-block"
             >
               Book Appointment
