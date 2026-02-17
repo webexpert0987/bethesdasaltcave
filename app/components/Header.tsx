@@ -1,8 +1,7 @@
 "use client";
+
 import Link from "next/link";
 import Image from "next/image";
-import Spa from "../../public/assets/images/spa.jpg";
-import Logo from "../../public/assets/images/logo.png";
 import { ChevronDown } from "lucide-react";
 
 export default function Header() {
@@ -13,7 +12,12 @@ export default function Header() {
 
           {/* Logo */}
           <Link href="/" className="text-2xl font-bold text-[#2c396b]">
-            <Image src="/assets/images/logo.png" alt="Logo" width={150} height={100} />
+            <Image
+              src="/assets/images/logo.png"
+              alt="Logo"
+              width={150}
+              height={100}
+            />
           </Link>
 
           {/* Navigation */}
@@ -34,14 +38,14 @@ export default function Header() {
               <MegaContent
                 title="Our Services"
                 links={[
-                  "Cryoskin",
-                  "Endosphere",
-                  "Massages And Body Work",
-                  "Salt Cave - Halo Therapy",
-                  "Salt Cave - Health Benefits",
-                  "Skin Care",
-                  "Spa Pricing",
-                  "Workshops and Classes",
+                  { name: "Cryoskin", href: "#" },
+                  { name: "Endosphere", href: "/services/enospheres-neveskin" },
+                  { name: "Massages And Body Work", href: "#" },
+                  { name: "Salt Cave - Halo Therapy", href: "#" },
+                  { name: "Salt Cave - Health Benefits", href: "#" },
+                  { name: "Skin Care", href: "#" },
+                  { name: "Spa Pricing", href: "#" },
+                  { name: "Workshops and Classes", href: "#" },
                 ]}
               />
             </div>
@@ -59,9 +63,9 @@ export default function Header() {
               <MegaContent
                 title="Our Spa"
                 links={[
-                  "Spa Etiquette",
-                  "FAQ",
-                  "Location",
+                  { name: "Spa Etiquette", href: "#" },
+                  { name: "FAQ", href: "#" },
+                  { name: "Location", href: "#" },
                 ]}
               />
             </div>
@@ -82,8 +86,8 @@ export default function Header() {
               <MegaContent
                 title="Media"
                 links={[
-                  "Social Media",
-                  "Salt Cave Blog",
+                  { name: "Social Media", href: "#" },
+                  { name: "Salt Cave Blog", href: "#" },
                 ]}
               />
             </div>
@@ -106,17 +110,17 @@ export default function Header() {
                 <MegaContent
                   title="Book Your Experience"
                   links={[
-                    "Spa Services",
-                    "Salt Cave",
-                    "BOOK NOW",
-                    "Gift Card",
+                    { name: "Spa Services", href: "#" },
+                    { name: "Salt Cave", href: "#" },
+                    { name: "BOOK NOW", href: "#" },
+                    { name: "Gift Card", href: "#" },
                   ]}
                 />
               </div>
 
               {/* GIFT CARD BUTTON */}
               <Link
-                href="#"
+                href="/gift-cards"
                 className="border border-[#804f33] px-6 py-2 rounded-full text-primary hover:bg-[#804f33] hover:!text-white transition-all duration-300"
               >
                 Gift Cards
@@ -135,37 +139,39 @@ export default function Header() {
 /* ===== Mega Menu Layout ===== */
 /* ============================= */
 
-function MegaContent({
-  title,
-  links,
-}: {
-  title: string;
-  links: string[];
-}) {
+type MegaLink = {
+  name: string;
+  href: string;
+};
+
+function MegaContent({ title, links }: { title: string; links: MegaLink[] }) {
   return (
     <div
       className="
       absolute left-0
       top-full mt-6
       w-full
+
       bg-white shadow-2xl rounded-2xl p-10
       opacity-0 invisible
       group-hover:opacity-100 group-hover:visible
       transition-all duration-300
-      "
+    "
     >
       <div className="grid grid-cols-2 gap-12 max-w-7xl mx-auto">
 
         {/* Left Side Links */}
         <div>
-          <h3 className="font-bold text-xl mb-6 text-[#804f33]">
-            {title}
-          </h3>
+          <h3 className="font-bold text-xl mb-6 text-[#804f33]">{title}</h3>
 
           <div className="flex flex-col gap-4 text-[#2c396b]">
             {links.map((item, index) => (
-              <Link key={index} href="#" className="hover:text-[#804f33] transition">
-                {item}
+              <Link
+                key={index}
+                href={item.href}
+                className="hover:text-[#804f33] transition"
+              >
+                {item.name}
               </Link>
             ))}
           </div>
