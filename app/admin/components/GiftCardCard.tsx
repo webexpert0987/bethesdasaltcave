@@ -13,6 +13,17 @@ export default function GiftCardCard({ card, onDelete }: Props) {
     <div className="bg-white p-6 rounded-2xl shadow-md border border-[#E5E5E5] flex flex-col justify-between">
       {/* Card Info */}
       <div>
+        {/* Gift Card Image */}
+        {card.image && (
+          <div className="mb-4">
+            <img
+              src={card.image}
+              alt={card.title}
+              className="w-full h-48 object-cover rounded-lg"
+            />
+          </div>
+        )}
+        
         <h2 className="text-2xl font-medium text-[#1C1C1C]">{card.title}</h2>
         <p className="mt-1 text-gray-600 text-sm">{card.description}</p>
         <p className="mt-2 font-semibold text-[#1C1C1C]">${card.amount}</p>

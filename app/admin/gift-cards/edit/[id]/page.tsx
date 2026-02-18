@@ -17,6 +17,8 @@ export default function EditGiftCardPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [image, setImage] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
 
   // Fetch gift card
   useEffect(() => {
@@ -39,6 +41,15 @@ export default function EditGiftCardPage() {
     if (id) loadCard();
   }, [id]);
 
+  // Handle image change
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setImage(file);
+    setPreview(URL.createObjectURL(file));
+  };
+
   // Handle update
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,7 +59,17 @@ export default function EditGiftCardPage() {
     setError("");
 
     try {
-      await updateGiftCard(card.id, card);
+      const formData = new FormData();
+      formData.append("title", card.title);
+      formData.append("description", card.description);
+      formData.append("amount", card.amount.toString());
+      formData.append("active", card.active.toString());
+
+      if (image) {
+        formData.append("image", image);
+      }
+
+      await updateGiftCard(card.id, formData);
       router.push("/admin/gift-cards");
     } catch (err) {
       console.error(err);
@@ -129,6 +150,44 @@ export default function EditGiftCardPage() {
               }
               className="mt-1 block w-full border border-gray-300 rounded-md p-3 focus:ring-primary focus:border-primary"
             />
+          </div>
+
+          {/* Image Upload */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Gift Card Image
+            </label>
+            
+            {/* Current Image */}
+            {card.image && !preview && (
+              <div className="mt-2">
+                <p className="text-xs text-gray-500 mb-2">Current Image:</p>
+                <img
+                  src={card.image}
+                  alt="Current"
+                  className="w-48 rounded-lg border"
+                />
+              </div>
+            )}
+
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="mt-2"
+            />
+
+            {/* New Image Preview */}
+            {preview && (
+              <div className="mt-4">
+                <p className="text-xs text-gray-500 mb-2">New Image Preview:</p>
+                <img
+                  src={preview}
+                  alt="Preview"
+                  className="w-48 rounded-lg border"
+                />
+              </div>
+            )}
           </div>
 
           {/* Active */}

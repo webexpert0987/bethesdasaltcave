@@ -1,17 +1,44 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function AdminSettingsPage() {
   const [form, setForm] = useState({
-    name: "Admin User",
-    email: "admin@example.com",
+    name: "",
+    email: "",
     password: "",
     confirmPassword: "",
   });
 
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  /* -------------------------------------------------------
+     LOAD ADMIN DATA ON MOUNT
+  ------------------------------------------------------- */
+  useEffect(() => {
+    const loadAdminData = async () => {
+      try {
+        const response = await fetch("/api/admin/settings");
+        const data = await response.json();
+        
+        if (data.success && data.admin) {
+          setForm((prev) => ({
+            ...prev,
+            name: data.admin.name || "",
+            email: data.admin.email || ""
+          }));
+        }
+        setLoading(false);
+      } catch (err) {
+        console.error("Failed to load admin data:", err);
+        setLoading(false);
+      }
+    };
+    
+    loadAdminData();
+  }, []);
 
   /* -------------------------------------------------------
      HANDLE INPUT CHANGE
@@ -38,30 +65,38 @@ const handleSubmit = async (e: React.FormEvent) => {
     return;
   }
 
+  // 2️⃣ Check if at least one field is filled
+  if (!form.name && !form.email && !form.password) {
+    setMessage("Please fill in at least one field to update.");
+    return;
+  }
+
   setSaving(true);
   setMessage("");
 
   try {
-    // 2️⃣ Call API to update admin
+    // 3️⃣ Call API to update admin
     const res = await fetch("/api/admin/settings", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         name: form.name,
         email: form.email,
-        password: form.password, // only if filled
+        password: form.password || undefined, // only if filled
       }),
     });
 
     const data = await res.json();
 
-    if (!data.success) throw new Error(data.error || "Failed to update");
+    if (!res.ok || !data.success) {
+      throw new Error(data.error || "Failed to update settings");
+    }
 
-    setMessage("Settings updated successfully.");
+    setMessage("✅ Settings updated successfully!");
     setForm((prev) => ({ ...prev, password: "", confirmPassword: "" })); // clear password fields
   } catch (err: any) {
     console.error(err);
-    setMessage(err.message || "Something went wrong.");
+    setMessage("❌ " + (err.message || "Something went wrong."));
   } finally {
     setSaving(false);
   }
@@ -82,7 +117,9 @@ const handleSubmit = async (e: React.FormEvent) => {
 
         {/* Message */}
         {message && (
-          <div className="mt-4 text-sm text-green-600">
+          <div className={`mt-4 p-3 rounded-md text-sm ${
+            message.includes("✅") ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"
+          }`}>
             {message}
           </div>
         )}
@@ -103,6 +140,7 @@ const handleSubmit = async (e: React.FormEvent) => {
               value={form.name}
               onChange={handleChange}
               className="mt-1 block w-full border border-gray-300 rounded-md p-3 focus:ring-primary focus:border-primary"
+              placeholder="Enter your full name"
             />
           </div>
 
@@ -117,6 +155,7 @@ const handleSubmit = async (e: React.FormEvent) => {
               value={form.email}
               onChange={handleChange}
               className="mt-1 block w-full border border-gray-300 rounded-md p-3 focus:ring-primary focus:border-primary"
+              placeholder="Enter your email"
             />
           </div>
 
@@ -145,7 +184,9 @@ const handleSubmit = async (e: React.FormEvent) => {
               name="confirmPassword"
               value={form.confirmPassword}
               onChange={handleChange}
-              className="mt-1 block w-full border border-gray-300 rounded-md p-3 focus:ring-primary focus:border-primary"
+              placeholder={form.password ? "Confirm your new password" : ""}
+              disabled={!form.password}
+              className="mt-1 block w-full border border-gray-300 rounded-md p-3 focus:ring-primary focus:border-primary disabled:bg-gray-100 disabled:cursor-not-allowed"
             />
           </div>
 
@@ -154,7 +195,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             <button
               type="submit"
               disabled={saving}
-              className="bg-primary hover:bg-primary-dark transition-all duration-300 px-12 py-5 font-semibold rounded-full inline-block text-white"
+              className="bg-primary hover:bg-primary-dark transition-all duration-300 px-12 py-5 font-semibold rounded-full inline-block text-white disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {saving ? "Saving..." : "Save Settings"}
             </button>
@@ -163,15 +204,15 @@ const handleSubmit = async (e: React.FormEvent) => {
               type="button"
               onClick={() =>
                 setForm({
-                  name: "Admin User",
-                  email: "admin@example.com",
+                  name: "",
+                  email: "",
                   password: "",
                   confirmPassword: "",
                 })
               }
               className="border-2 border-primary text-primary hover:bg-primary-dark hover:!text-white hover:border-primary-dark transition-all duration-300 px-12 py-5 font-semibold rounded-full inline-block"
             >
-              Reset
+              Clear
             </button>
           </div>
         </form>

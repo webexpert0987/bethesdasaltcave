@@ -60,38 +60,7 @@ export async function fetchGiftCards(): Promise<GiftCard[]> {
   }
 }
 
-/* -------------------------------------------------------
-   ADD GIFT CARD
-------------------------------------------------------- */
-export async function addGiftCard(card: Partial<GiftCard>): Promise<GiftCard> {
-  try {
-    const res = await fetch("/api/admin/gift-cards", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-body: JSON.stringify({
-  name: card.title,
-  description: card.description,
-  price: card.amount,
-  image: card.image || "",
-})
-    });
-    const data = await res.json();
-    if (!data.success) throw new Error(data.error || "Failed to add gift card");
 
-    return {
-      id: data.giftCard._id,
-      title: data.giftCard.name,
-      description: data.giftCard.description,
-      amount: data.giftCard.price,
-      image: data.giftCard.image || "",
-      active: true,
-      createdAt: data.giftCard.createdAt,
-    };
-  } catch (err) {
-    console.error(err);
-    throw err;
-  }
-}
 
 
 /* -------------------------------------------------------
@@ -136,23 +105,46 @@ export async function getGiftCardById(id: string): Promise<GiftCard | null> {
   }
 }
 
+export async function addGiftCard(formData: FormData): Promise<GiftCard> {
+  try {
+    const res = await fetch("/api/admin/gift-cards", {
+      method: "POST",
+      body: formData, // ❗ No headers
+    });
+
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || "Failed to add gift card");
+
+    return {
+      id: data.giftCard._id,
+      title: data.giftCard.name,
+      description: data.giftCard.description,
+      amount: data.giftCard.price,
+      image: data.giftCard.image || "",
+      active: data.giftCard.active ?? true,
+      createdAt: data.giftCard.createdAt,
+    };
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+}
 
 /* -------------------------------------------------------
    UPDATE GIFT CARD
 ------------------------------------------------------- */
-export async function updateGiftCard(id: string, updatedData: Partial<GiftCard>): Promise<GiftCard | null> {
+export async function updateGiftCard(
+  id: string,
+  formData: FormData
+): Promise<GiftCard | null> {
   try {
+    formData.append("id", id);
+
     const res = await fetch("/api/admin/gift-cards", {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        id,
-        name: updatedData.title,
-        description: updatedData.description,
-        price: updatedData.amount,
-        image: updatedData.image,
-      }),
+      body: formData,
     });
+
     const data = await res.json();
     if (!data.success) throw new Error(data.error || "Failed to update gift card");
 
@@ -170,6 +162,7 @@ export async function updateGiftCard(id: string, updatedData: Partial<GiftCard>)
     return null;
   }
 }
+
 
 
 /* -------------------------------------------------------

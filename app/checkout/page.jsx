@@ -48,7 +48,7 @@ useEffect(() => {
   return (
     <main className="bg-[#F8F6F3] text-[#1C1C1C] min-h-screen">
       {/* Hero */}
-      <section className="py-24 text-center">
+      <section className="py-24 pb-0 text-center">
         <h1 className="text-4xl md:text-5xl font-semibold tracking-tight">
           Gift Card Checkout
         </h1>
