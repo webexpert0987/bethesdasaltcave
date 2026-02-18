@@ -63,7 +63,7 @@ export default function EditGiftCardPage() {
       formData.append("title", card.title);
       formData.append("description", card.description);
       formData.append("amount", card.amount.toString());
-      formData.append("active", card.active.toString());
+      formData.append("active", (card.active ?? true).toString());
 
       if (image) {
         formData.append("image", image);

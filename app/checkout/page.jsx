@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-export default function CheckoutPage() {
+function CheckoutContent() {
   const searchParams = useSearchParams();
   const [giftInfo, setGiftInfo] = useState({ title: "", price: 0 });
   const [formData, setFormData] = useState({
@@ -181,5 +181,13 @@ useEffect(() => {
         </Link>
       </section>
     </main>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <CheckoutContent />
+    </Suspense>
   );
 }

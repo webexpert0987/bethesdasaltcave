@@ -2,8 +2,13 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-  domains: ["bethesdasaltcave.s3.us-east-2.amazonaws.com"],
-},
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "bethesdasaltcave.s3.us-east-2.amazonaws.com",
+      },
+    ],
+  },
 };
 
 export default nextConfig;
