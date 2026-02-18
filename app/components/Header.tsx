@@ -53,7 +53,7 @@ export default function Header() {
             {/* OUR SPA */}
             <div className="group">
               <button className="py-2 flex items-center gap-1">
-                Our Spa
+                Our Spa 
                 <ChevronDown
                   size={16}
                   className="transition-transform duration-300 group-hover:rotate-180"
