@@ -3,8 +3,6 @@ import { connectDB } from "@/app/admin/lib/mongodb";
 import GiftCard from "@/app/admin/models/GiftCard";
 import s3 from "@/app/admin/lib/s3";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
-console.log("REGION:", process.env.AWS_REGION);
-console.log("BUCKET:", process.env.AWS_BUCKET_NAME);
 
 /* =======================================================
    GET - All or Single
@@ -67,6 +65,9 @@ export async function POST(req: Request) {
         })
       );
 
+      if (!process.env.AWS_BUCKET_NAME || !process.env.AWS_REGION) {
+        throw new Error("S3 configuration missing");
+      }
       imageUrl = `https://${process.env.AWS_BUCKET_NAME}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`;
     }
 

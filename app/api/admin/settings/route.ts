@@ -72,7 +72,6 @@ export async function PUT(req: Request) {
     if (password && password.trim() !== "") {
       const salt = await bcrypt.genSalt(10);
       updateData.password = await bcrypt.hash(password, salt);
-      console.log("Password hash created:", updateData.password.substring(0, 20) + "...");
     }
 
     // If nothing to update, return success
@@ -83,16 +82,12 @@ export async function PUT(req: Request) {
       });
     }
 
-    console.log("Update data:", Object.keys(updateData));
-
     // Use raw MongoDB collection to update, bypassing Mongoose validators
     const collection = Admin.collection;
     const result = await collection.updateOne(
       { _id: admin._id },
       { $set: updateData }
     );
-
-    console.log("Update result:", { matchedCount: result.matchedCount, modifiedCount: result.modifiedCount });
 
     if (result.modifiedCount === 0) {
       return NextResponse.json({ 
