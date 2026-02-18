@@ -11,10 +11,10 @@ Make sure to configure these environment variables in AWS Amplify Console:
 - `JWT_SECRET` - Secret key for JWT tokens
 
 ### AWS S3 Configuration
-- `AWS_ACCESS_KEY_ID` - AWS access key for S3
-- `AWS_SECRET_ACCESS_KEY` - AWS secret access key for S3
-- `AWS_REGION` - AWS region (e.g., us-east-2)
-- `AWS_BUCKET_NAME` - S3 bucket name (e.g., bethesdasaltcave)
+- `SERVER_ACCESS_KEY_ID` - AWS access key for S3
+- `SERVER_SECRET_ACCESS_KEY` - AWS secret access key for S3
+- `SERVER_REGION` - AWS region (e.g., us-east-2)
+- `SERVER_BUCKET_NAME` - S3 bucket name (e.g., bethesdasaltcave)
 
 ## Steps to Add Environment Variables:
 
