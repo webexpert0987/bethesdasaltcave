@@ -1,12 +1,23 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/giftcards"; // fallback for local dev
+const MONGODB_URI = process.env.MONGODB_URI;
+
+// Production safety
+if (!MONGODB_URI && process.env.NODE_ENV === "production") {
+  throw new Error(
+    "MONGODB_URI is required in production. Set it in Amplify environment variables."
+  );
+}
+
+// Use local fallback only for development
+const uri = MONGODB_URI || "mongodb://127.0.0.1:27017/giftcards";
 
 type MongooseCache = {
   conn: typeof mongoose | null;
   promise: Promise<typeof mongoose> | null;
 };
 
+// Singleton cache for serverless
 let cached = (global as any).mongoose as MongooseCache;
 
 if (!cached) {
@@ -20,11 +31,7 @@ export async function connectDB() {
   if (cached.conn) return cached.conn;
 
   if (!cached.promise) {
-    if (!MONGODB_URI) {
-      throw new Error("MONGODB_URI not defined. Set it in .env.local or Amplify environment variables.");
-    }
-
-    cached.promise = mongoose.connect(MONGODB_URI, {
+    cached.promise = mongoose.connect(uri, {
       dbName: "giftcards",
     });
   }
