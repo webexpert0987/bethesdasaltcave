@@ -9,6 +9,13 @@ if (!MONGODB_URI && process.env.NODE_ENV === "production") {
   );
 }
 
+async function connectMongo() {
+  if (mongoose.connection.readyState >= 1) return;
+  await mongoose.connect(process.env.MONGODB_URI!);
+}
+
+export default connectMongo;
+
 // Use local fallback only for development
 const uri = MONGODB_URI || "mongodb://127.0.0.1:27017/giftcards";
 

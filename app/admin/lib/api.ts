@@ -226,16 +226,35 @@ let customers: Customer[] = [
   },
 ];
 
-/* FETCH ALL CUSTOMERS */
-export async function fetchCustomers(): Promise<Customer[]> {
-  await new Promise((r) => setTimeout(r, 500));
-  return customers;
-}
-
 /* FETCH SINGLE CUSTOMER */
 export async function getCustomerById(
   id: string
 ): Promise<Customer | null> {
   await new Promise((r) => setTimeout(r, 400));
   return customers.find((c) => c.id === id) || null;
+}
+
+// Fetch Customers
+export async function fetchCustomers() {
+  const res = await fetch("/api/customers", {
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch customers");
+  }
+
+  return res.json();
+}
+// Fetch Reports
+export async function fetchReports() {
+  const res = await fetch("/api/reports", {
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch reports");
+  }
+
+  return res.json();
 }

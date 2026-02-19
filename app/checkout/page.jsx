@@ -38,12 +38,31 @@ useEffect(() => {
   const subtotal = giftInfo.price;
   const total = subtotal - discount;
 
-  // PayPal checkout function
-  const handlePayPalCheckout = () => {
-    // For demonstration: redirect to PayPal
-    alert(`Redirecting to PayPal for $${total}`);
-    // Implement PayPal SDK checkout here
-  };
+const handleStripeCheckout = async () => {
+  try {
+    const res = await fetch("/api/create-checkout-session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        giftTitle: giftInfo.title,
+        amount: total,
+        billingName: formData.billingName,
+        billingEmail: formData.billingEmail,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (data.url) {
+      window.location.href = data.url; // ← redirect to Stripe checkout
+    } else {
+      alert("Failed to create Stripe session.");
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Something went wrong, please try again.");
+  }
+};
 
   return (
     <main className="bg-[#F8F6F3] text-[#1C1C1C] min-h-screen">
@@ -161,13 +180,13 @@ useEffect(() => {
             <span>${total}</span>
           </div>
           <button
-            onClick={handlePayPalCheckout}
-            className="w-full bg-[#FFC439] hover:bg-[#FFB800] transition-all duration-300 px-12 py-5 font-semibold rounded-full inline-block text-[#1C1C1C] mt-4"
+            onClick={handleStripeCheckout}
+            className="w-full bg-[#635bff] hover:bg-[#4e45d1] transition-all duration-300 px-12 py-5 font-semibold rounded-full text-white mt-4"
           >
-            Pay with PayPal
+            Pay with Card (Stripe)
           </button>
           <p className="mt-4 text-gray-500 text-sm text-center">
-            Secure checkout via PayPal. No spam. Terms apply.
+            Secure checkout via Stripe. No spam. Terms apply.
           </p>
         </div>
       </section>

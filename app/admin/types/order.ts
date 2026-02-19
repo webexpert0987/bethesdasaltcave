@@ -1,9 +1,10 @@
-export interface Order {
-  id: string;
+export interface OrderType {
+  _id?: string;
   customerName: string;
   customerEmail: string;
-  amount: number;
   giftCardTitle: string;
-  paymentStatus: "paid" | "pending" | "failed";
-  createdAt: string;
+  amount: number;
+  paymentStatus: "pending" | "paid" | "failed";
+  createdAt?: string;
+  updatedAt?: string;
 }
