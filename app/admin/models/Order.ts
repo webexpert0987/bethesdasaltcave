@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 const orderSchema = new mongoose.Schema({
   customerEmail: { type: String, required: true },
   customerName: { type: String, required: true },
+  giftCardTitle: { type: String, required: true },
   amount: { type: Number, required: true },
   giftCardCode: { type: String, required: true, unique: true },
   paymentStatus: { type: String, enum: ['pending', 'paid', 'refunded'], default: 'pending' },

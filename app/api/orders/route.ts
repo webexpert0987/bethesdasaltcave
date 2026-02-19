@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import connectMongo from "@/app/admin/lib/mongodb";
-import Order from "@/app/admin/models/Order"; // Mongoose model for orders
+import { Order } from "@/app/admin/models/Order"; // Mongoose model for orders
 import { OrderType } from "@/app/admin/types/order";
 
 export async function POST(req: Request) {
