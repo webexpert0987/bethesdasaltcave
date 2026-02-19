@@ -1,26 +1,43 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Logo from "@/public/assets/images/logo.png"; // Replace with your admin/logo image
 import { useRouter } from "next/navigation";
-import UserName from "./UserName";
 
 export default function AdminHeader() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [userName, setUserName] = useState("");
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
   const router = useRouter(); 
 
   const handleLogout = () => {
   // Remove token
-localStorage.removeItem("token");
-localStorage.removeItem("userEmail");
-localStorage.removeItem("userName");
+  localStorage.removeItem("token");
+
+  // Optional: clear any other user data
+  localStorage.removeItem("user");
+  localStorage.removeItem("userName");
+  localStorage.removeItem("userEmail");
 
   // Redirect to login page
   router.push("/login");
 };
+
+  // Load user name from localStorage
+  useEffect(() => {
+    const storedName = localStorage.getItem("userName");
+    console.log("Header: Loading userName from localStorage:", storedName);
+    if (storedName) {
+      setUserName(storedName);
+    }
+  }, []);
+  
+  console.log("Header: Current userName state:", userName);
+
+  // Get first letter of name for avatar
+  const userInitial = userName ? userName.charAt(0).toUpperCase() : "U";
 
   return (
     <header className="flex justify-between items-center bg-white px-6 py-4 shadow-md sticky top-0 z-50">
@@ -36,9 +53,9 @@ localStorage.removeItem("userName");
           onClick={toggleDropdown}
           className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full hover:bg-gray-200 transition"
         >
-          <span className="font-medium text-gray-700"><UserName /></span>
-          <div className="w-8 h-8 rounded-full bg-gray-400 flex items-center justify-center text-white">
-            
+          <span className="font-medium text-gray-700">{userName || "User"}</span>
+          <div className="w-8 h-8 rounded-full bg-gray-400 flex items-center justify-center text-white font-semibold">
+            {userInitial}
           </div>
         </button>
 

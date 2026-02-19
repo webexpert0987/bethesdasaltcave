@@ -9,8 +9,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  console.log("📦 Response data:", data);
-
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,17 +46,34 @@ export default function LoginPage() {
 // ✅ SUCCESS CASE
 console.log("Login Success Data:", data);
 
-localStorage.setItem("userEmail", data.email);
-localStorage.setItem("userName", data.name);
-localStorage.setItem("token", data.token);
+// Store user data in localStorage
+if (data.name) {
+  localStorage.setItem("userName", data.name);
+  console.log("✅ Stored userName:", data.name);
+} else {
+  console.warn("⚠️ No name in response data");
+}
+
+if (data.email) {
+  localStorage.setItem("userEmail", data.email);
+  console.log("✅ Stored userEmail:", data.email);
+}
+
+if (data.token) {
+  localStorage.setItem("token", data.token);
+  console.log("✅ Stored token");
+}
 
 console.log("After Save:", {
   userEmail: localStorage.getItem("userEmail"),
   userName: localStorage.getItem("userName"),
+  token: localStorage.getItem("token") ? "exists" : "missing",
 });
 
-router.push("/admin/dashboard");
-router.refresh();
+// Small delay to ensure localStorage is written
+setTimeout(() => {
+  router.push("/admin/dashboard");
+}, 100);
 
     } catch (err) {
       console.error("🔥 Login error:", err);
