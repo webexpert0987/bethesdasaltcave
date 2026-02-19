@@ -1,16 +1,15 @@
-import mongoose, { Schema, model, models } from "mongoose";
+// app/lib/models/Order.ts
+import mongoose from 'mongoose';
 
-const orderSchema = new Schema(
-  {
-    customerName: { type: String, required: true },
-    customerEmail: { type: String, required: true },
-    giftCardTitle: { type: String, required: true },
-    amount: { type: Number, required: true },
-    paymentStatus: { type: String, enum: ["pending", "paid", "failed"], default: "pending" },
-    createdAt: { type: Date, default: Date.now },
-  },
-  { timestamps: true }
-);
+const orderSchema = new mongoose.Schema({
+  customerEmail: { type: String, required: true },
+  customerName: { type: String, required: true },
+  amount: { type: Number, required: true },
+  giftCardCode: { type: String, required: true, unique: true },
+  paymentStatus: { type: String, enum: ['pending', 'paid', 'refunded'], default: 'pending' },
+  createdAt: { type: Date, default: Date.now },
+});
 
-const Order = models.Order || model("Order", orderSchema);
-export default Order;
+const Order = mongoose.models.Order || mongoose.model('Order', orderSchema);
+
+export { Order };

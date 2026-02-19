@@ -12,7 +12,7 @@ export type Order = {
 /* FETCH ALL ORDERS */
 export async function getOrders(): Promise<Order[]> {
   try {
-    const res = await fetch("http://localhost:3000/api/orders", {
+    const res = await fetch("/api/orders", {
       cache: "no-store", // always fresh data
     });
 
@@ -34,7 +34,7 @@ export async function getOrderById(
 ): Promise<Order | null> {
   try {
     const res = await fetch(
-      `http://localhost:3000/api/orders/${id}`,
+      `/api/orders/${id}`,
       { cache: "no-store" }
     );
 
