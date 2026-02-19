@@ -161,7 +161,7 @@ export default function OrdersPage() {
                   onClick={() => setCurrentPage(i + 1)}
                   className={`px-3 py-1 rounded ${
                     currentPage === i + 1
-                      ? "bg-black text-white"
+                      ? "bg-primary text-white"
                       : "bg-gray-200"
                   }`}
                 >
@@ -169,7 +169,7 @@ export default function OrdersPage() {
                 </button>
               ))}
             </div>
-            /* ✅ Popup Modal */
+            {/* ✅ Popup Modal */}
 {selectedOrder && (
   <div className="fixed inset-0 popup-overlay bg-black bg-opacity-50 flex justify-center items-center z-50">
     <div className="bg-white p-6 rounded-xl w-96 relative shadow-xl">

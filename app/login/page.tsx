@@ -5,11 +5,12 @@ import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const router = useRouter();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  console.log("📦 Response data:", data);
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,20 +39,25 @@ export default function LoginPage() {
       console.log("📦 Response data:", data);
 
       if (!res.ok) {
-        setError(data.error || data.message || "Login failed");
-        setLoading(false);
-        return;
-      }
+  setError(data.error || "Login failed");
+  setLoading(false);
+  return;
+}
 
-      console.log("✅ Login success");
+// ✅ SUCCESS CASE
+console.log("Login Success Data:", data);
 
+localStorage.setItem("userEmail", data.email);
+localStorage.setItem("userName", data.name);
+localStorage.setItem("token", data.token);
 
-      console.log("🍪 Token saved in cookie");
+console.log("After Save:", {
+  userEmail: localStorage.getItem("userEmail"),
+  userName: localStorage.getItem("userName"),
+});
 
-      // Redirect dashboard
-
-      router.push("/admin/dashboard");
-      router.refresh(); // important
+router.push("/admin/dashboard");
+router.refresh();
 
     } catch (err) {
       console.error("🔥 Login error:", err);

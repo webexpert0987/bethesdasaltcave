@@ -166,72 +166,52 @@ export async function updateGiftCard(
 
 
 /* -------------------------------------------------------
-   MOCK ORDERS DATA
+   FETCH ALL ORDERS FROM DATABASE
 ------------------------------------------------------- */
-
-let orders: Order[] = [
-  {
-    id: "ORD-1001",
-    customerName: "John Doe",
-    customerEmail: "john@example.com",
-    amount: 50,
-    giftCardTitle: "$50 Gift Card",
-    paymentStatus: "paid",
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "ORD-1002",
-    customerName: "Sarah Smith",
-    customerEmail: "sarah@example.com",
-    amount: 100,
-    giftCardTitle: "$100 Gift Card",
-    paymentStatus: "pending",
-    createdAt: new Date().toISOString(),
-  },
-];
-
-/* FETCH ALL ORDERS */
 export async function fetchOrders(): Promise<Order[]> {
-  await new Promise((r) => setTimeout(r, 500));
-  return orders;
+  try {
+    const res = await fetch("/api/orders", {
+      cache: "no-store",
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch orders");
+    }
+
+    const orders = await res.json();
+    
+    // Transform MongoDB documents to Order type
+    return orders.map((order: any) => ({
+      _id: order._id,
+      id: order._id,
+      customerName: order.customerName,
+      customerEmail: order.customerEmail,
+      giftCardTitle: order.giftCardTitle,
+      amount: order.amount,
+      paymentStatus: order.paymentStatus,
+      createdAt: order.createdAt,
+    }));
+  } catch (err) {
+    console.error("Orders fetch error:", err);
+    return [];
+  }
 }
 
 /* FETCH SINGLE ORDER */
-export async function getOrderById(
-  id: string
-): Promise<Order | null> {
-  await new Promise((r) => setTimeout(r, 400));
-  return orders.find((o) => o.id === id) || null;
-}
+// export async function getOrderById(
+//   id: string
+// ): Promise<Order | null> {
+//   await new Promise((r) => setTimeout(r, 400));
+//   return orders.find((o) => o.id === id) || null;
+// }
 /* -------------------------------------------------------
-   MOCK CUSTOMERS DATA
+   FETCH SINGLE CUSTOMER FROM DATABASE
 ------------------------------------------------------- */
-
-let customers: Customer[] = [
-  {
-    id: "CUST-001",
-    name: "John Doe",
-    email: "john@example.com",
-    totalOrders: 2,
-    totalSpent: 150,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "CUST-002",
-    name: "Sarah Smith",
-    email: "sarah@example.com",
-    totalOrders: 1,
-    totalSpent: 100,
-    createdAt: new Date().toISOString(),
-  },
-];
-
-/* FETCH SINGLE CUSTOMER */
 export async function getCustomerById(
   id: string
 ): Promise<Customer | null> {
-  await new Promise((r) => setTimeout(r, 400));
-  return customers.find((c) => c.id === id) || null;
+  const customers = await fetchCustomers();
+  return customers.find((c: any) => c.email === id) || null;
 }
 
 // Fetch Customers

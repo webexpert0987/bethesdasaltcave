@@ -2,53 +2,72 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { getOrders } from "@/app/admin/lib/orders"; // adjust path
 
-// Sample data - replace with API / Supabase fetch
-const sampleStats = {
-  totalGiftCards: 12,
-  totalOrders: 34,
-  totalRevenue: 1250,
+type Order = {
+  _id: string;
+  customerName: string;
+  customerEmail: string;
+  giftCardTitle: string;
+  amount: number;
+  paymentStatus: string;
 };
 
-const recentOrders = [
-  { id: "ORD001", customer: "John Doe", giftCard: "Relaxation Spa", total: 50, status: "Completed" },
-  { id: "ORD002", customer: "Jane Smith", giftCard: "Wellness Package", total: 75, status: "Pending" },
-  { id: "ORD003", customer: "Alice Lee", giftCard: "Meditation Session", total: 40, status: "Completed" },
-];
-
 export default function Dashboard() {
-  const [stats, setStats] = useState(sampleStats);
-  const [orders, setOrders] = useState(recentOrders);
+  const [stats, setStats] = useState({
+    totalGiftCards: 0,
+    totalOrders: 0,
+    totalRevenue: 0,
+  });
+
+  const [orders, setOrders] = useState<Order[]>([]);
 
   useEffect(() => {
-    // Fetch dynamic data here if needed
+    async function loadData() {
+      const data = await getOrders();
+
+      if (!data) return;
+
+      // Calculate stats dynamically
+      const totalRevenue = data
+        .filter((o) => o.paymentStatus === "paid")
+        .reduce((sum, o) => sum + Number(o.amount), 0);
+
+      const uniqueGiftCards = new Set(
+        data.map((o) => o.giftCardTitle)
+      );
+
+      setStats({
+        totalGiftCards: uniqueGiftCards.size,
+        totalOrders: data.length,
+        totalRevenue,
+      });
+
+      // Show latest 5 orders
+      setOrders(data.slice(0, 5));
+    }
+
+    loadData();
   }, []);
 
   return (
     <div className="p-6 space-y-12 bg-gray-50 min-h-screen">
+
       {/* Stats Section */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {/* Card */}
-        <div className="bg-white rounded-3xl shadow-lg p-8 border border-gray-100 hover:shadow-2xl transition-all">
-          <h3 className="text-gray-500 font-medium text-sm">Total Gift Cards</h3>
-          <p className="text-5xl font-bold text-gray-900 mt-4">{stats.totalGiftCards}</p>
-        </div>
 
-        <div className="bg-white rounded-3xl shadow-lg p-8 border border-gray-100 hover:shadow-2xl transition-all">
-          <h3 className="text-gray-500 font-medium text-sm">Total Orders</h3>
-          <p className="text-5xl font-bold text-gray-900 mt-4">{stats.totalOrders}</p>
-        </div>
+        <StatCard title="Total Gift Cards" value={stats.totalGiftCards} />
+        <StatCard title="Total Orders" value={stats.totalOrders} />
+        <StatCard title="Total Revenue" value={`$${stats.totalRevenue}`} />
 
-        <div className="bg-white rounded-3xl shadow-lg p-8 border border-gray-100 hover:shadow-2xl transition-all">
-          <h3 className="text-gray-500 font-medium text-sm">Total Revenue</h3>
-          <p className="text-5xl font-bold text-gray-900 mt-4">${stats.totalRevenue}</p>
-        </div>
       </div>
 
-      {/* Recent Orders Section */}
+      {/* Recent Orders */}
       <div className="bg-white rounded-3xl shadow-lg border border-gray-100 p-8">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-semibold text-gray-900">Recent Orders</h2>
+          <h2 className="text-2xl font-semibold text-gray-900">
+            Recent Orders
+          </h2>
           <Link
             href="/admin/orders"
             className="text-[#2c396b] font-medium hover:underline"
@@ -61,47 +80,49 @@ export default function Dashboard() {
           <table className="table-auto w-full">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Order ID</th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Customer</th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Gift Card</th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Total</th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Action</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Order ID</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Customer</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Gift Card</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Total</th>
+                <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Status</th>
               </tr>
             </thead>
 
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="divide-y">
               {orders.map((order) => (
-                <tr key={order.id} className="hover:bg-gray-50 transition">
-                  <td className="px-6 py-4 font-medium text-gray-900">{order.id}</td>
-                  <td className="px-6 py-4 text-gray-700">{order.customer}</td>
-                  <td className="px-6 py-4 text-gray-700">{order.giftCard}</td>
-                  <td className="px-6 py-4 font-semibold text-gray-900">${order.total}</td>
+                <tr key={order._id}>
+                  <td className="px-6 py-4 font-medium">{order._id}</td>
+                  <td className="px-6 py-4">{order.customerName}</td>
+                  <td className="px-6 py-4">{order.giftCardTitle}</td>
+                  <td className="px-6 py-4 font-semibold">${order.amount}</td>
                   <td className="px-6 py-4">
                     <span
                       className={`px-3 py-1 rounded-full text-sm font-medium ${
-                        order.status === "Completed"
+                        order.paymentStatus === "paid"
                           ? "bg-green-100 text-green-800"
                           : "bg-yellow-100 text-yellow-800"
                       }`}
                     >
-                      {order.status}
+                      {order.paymentStatus}
                     </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <Link
-                      href={`/admin/orders/${order.id}`}
-                      className="text-[#2c396b] font-medium hover:underline"
-                    >
-                      View
-                    </Link>
                   </td>
                 </tr>
               ))}
             </tbody>
+
           </table>
         </div>
       </div>
+    </div>
+  );
+}
+
+/* Reusable Stat Card */
+function StatCard({ title, value }: { title: string; value: any }) {
+  return (
+    <div className="bg-white rounded-3xl shadow-lg p-8 border border-gray-100 hover:shadow-2xl transition-all">
+      <h3 className="text-gray-500 font-medium text-sm">{title}</h3>
+      <p className="text-5xl font-bold text-gray-900 mt-4">{value}</p>
     </div>
   );
 }

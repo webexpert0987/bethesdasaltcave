@@ -4,11 +4,23 @@ import Image from "next/image";
 import { useState } from "react";
 import Link from "next/link";
 import Logo from "@/public/assets/images/logo.png"; // Replace with your admin/logo image
+import { useRouter } from "next/navigation";
+import UserName from "./UserName";
 
 export default function AdminHeader() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
+  const router = useRouter(); 
+
+  const handleLogout = () => {
+  // Remove token
+localStorage.removeItem("token");
+localStorage.removeItem("userEmail");
+localStorage.removeItem("userName");
+
+  // Redirect to login page
+  router.push("/login");
+};
 
   return (
     <header className="flex justify-between items-center bg-white px-6 py-4 shadow-md sticky top-0 z-50">
@@ -24,9 +36,9 @@ export default function AdminHeader() {
           onClick={toggleDropdown}
           className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-full hover:bg-gray-200 transition"
         >
-          <span className="font-medium text-gray-700">Kanhaiya J.</span>
+          <span className="font-medium text-gray-700"><UserName /></span>
           <div className="w-8 h-8 rounded-full bg-gray-400 flex items-center justify-center text-white">
-            K
+            
           </div>
         </button>
 
@@ -39,16 +51,16 @@ export default function AdminHeader() {
               onClick={() => setDropdownOpen(false)}
             >
               Profile
-            </Link>
+            </Link>    
             <button
-              className="w-full text-left px-4 py-2 hover:bg-gray-100 transition"
-              onClick={() => alert("Logout logic goes here")}
-            >
-              Logout
-            </button>
-          </div>
-        )}
-      </div>
+          className="w-full text-left px-4 py-2 hover:bg-gray-100 transition"
+          onClick={handleLogout}
+        >
+          Logout
+        </button>
+                  </div>
+                )}
+              </div>
     </header>
   );
 }

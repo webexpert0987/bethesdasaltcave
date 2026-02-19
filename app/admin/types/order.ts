@@ -8,3 +8,12 @@ export interface OrderType {
   createdAt?: string;
   updatedAt?: string;
 }
+export interface Order {
+  _id: string;
+  amount: number;
+  paymentStatus: string;
+  customerEmail: string;
+  customerName: string;
+  createdAt: string;
+  giftCardTitle: string;
+}
