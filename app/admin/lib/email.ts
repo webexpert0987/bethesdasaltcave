@@ -1,13 +1,13 @@
 // app/lib/email.ts - CREATE THIS FILE
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY!);
+const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_API_KEY!);
 
 // Log configuration on startup
 console.log('📧 Email Configuration:', {
-  hasApiKey: !!process.env.RESEND_API_KEY,
-  fromEmail: process.env.RESEND_FROM_EMAIL,
-  adminEmail: process.env.ADMIN_EMAIL,
+  hasApiKey: !!process.env.NEXT_PUBLIC_RESEND_API_KEY,
+  fromEmail: process.env.NEXT_PUBLIC_RESEND_FROM_EMAIL,
+  adminEmail: process.env.NEXT_PUBLIC_ADMIN_EMAIL,
 });
 
 export async function sendGiftCardEmail({
@@ -112,12 +112,12 @@ export async function sendGiftCardEmail({
   try {
     console.log('📤 Attempting to send email:', {
       to,
-      from: process.env.RESEND_FROM_EMAIL || 'Bethesda Salt Cave <onboarding@resend.dev>',
+      from: process.env.NEXT_PUBLIC_RESEND_FROM_EMAIL || 'Bethesda Salt Cave <onboarding@resend.dev>',
       isAdmin,
     });
 
     const data = await resend.emails.send({
-      from: process.env.RESEND_FROM_EMAIL || 'Bethesda Salt Cave <onboarding@resend.dev>',
+      from: process.env.NEXT_PUBLIC_RESEND_FROM_EMAIL || 'Bethesda Salt Cave <onboarding@resend.dev>',
       to: to,
       subject: isAdmin ? '🔔 New Gift Card Order!' : '🎁 Your Bethesda Salt Cave Gift Card',
       html: isAdmin ? adminEmailTemplate : customerEmailTemplate,

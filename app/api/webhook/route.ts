@@ -4,7 +4,7 @@ import connectMongo from "@/app/admin/lib/mongodb";
 import { Order } from "@/app/admin/models/Order";
 import { sendGiftCardEmail } from "@/app/admin/lib/email";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {});
+const stripe = new Stripe(process.env.NEXT_PUBLIC_STRIPE_SECRET_KEY!, {});
 
 // Generate a unique gift card code
 function generateGiftCardCode(): string {
@@ -24,7 +24,7 @@ export async function POST(req: Request) {
   let event: Stripe.Event;
 
   try {
-    event = stripe.webhooks.constructEvent(body, sig, process.env.STRIPE_WEBHOOK_SECRET!);
+    event = stripe.webhooks.constructEvent(body, sig, process.env.NEXT_PUBLIC_STRIPE_WEBHOOK_SECRET!);
   } catch (err) {
     console.log("❌ Webhook signature verification failed:", err);
     return new Response(`Webhook Error: ${err}`, { status: 400 });
@@ -72,7 +72,7 @@ export async function POST(req: Request) {
 
     // Send email to admin
     try {
-      const adminEmail = process.env.ADMIN_EMAIL || "admin@bethesdasaltcave.com";
+      const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL || "admin@bethesdasaltcave.com";
       await sendGiftCardEmail({
         to: adminEmail,
         customerName,

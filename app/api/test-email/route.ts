@@ -4,8 +4,8 @@ import { sendGiftCardEmail } from "@/app/admin/lib/email";
 export async function GET() {
   try {
     console.log("🧪 Testing email configuration...");
-    console.log("RESEND_API_KEY exists:", !!process.env.RESEND_API_KEY);
-    console.log("RESEND_FROM_EMAIL:", process.env.RESEND_FROM_EMAIL);
+    console.log("NEXT_PUBLIC_RESEND_API_KEY exists:", !!process.env.NEXT_PUBLIC_RESEND_API_KEY);
+    console.log("NEXT_PUBLIC_RESEND_FROM_EMAIL:", process.env.NEXT_PUBLIC_RESEND_FROM_EMAIL);
     
     // Test email send
     const result = await sendGiftCardEmail({

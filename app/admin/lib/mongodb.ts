@@ -1,23 +1,23 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI;
+const NEXT_PUBLIC_MONGODB_URI = process.env.NEXT_PUBLIC_MONGODB_URI;
 
 // Production safety
-if (!MONGODB_URI && process.env.NODE_ENV === "production") {
+if (!NEXT_PUBLIC_MONGODB_URI && process.env.NODE_ENV === "production") {
   throw new Error(
-    "MONGODB_URI is required in production. Set it in Amplify environment variables."
+    "NEXT_PUBLIC_MONGODB_URI is required in production. Set it in Amplify environment variables."
   );
 }
 
 async function connectMongo() {
   if (mongoose.connection.readyState >= 1) return;
-  await mongoose.connect(process.env.MONGODB_URI!);
+  await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI!);
 }
 
 export default connectMongo;
 
 // Use local fallback only for development
-const uri = MONGODB_URI || "mongodb://127.0.0.1:27017/giftcards";
+const uri = NEXT_PUBLIC_MONGODB_URI || "mongodb://127.0.0.1:27017/giftcards";
 
 type MongooseCache = {
   conn: typeof mongoose | null;

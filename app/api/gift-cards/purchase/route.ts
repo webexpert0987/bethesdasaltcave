@@ -42,7 +42,7 @@ export async function POST(request: Request) {
 
     // Send admin notification
     try {
-      const adminEmail = process.env.ADMIN_EMAIL || "admin@bethesdasaltcave.com";
+      const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL || "admin@bethesdasaltcave.com";
       await sendGiftCardEmail({
         to: adminEmail,
         customerName,
