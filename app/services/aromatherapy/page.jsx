@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import GoogleReviews from "@/app/components/GoogleReviews";
+
 
 export default function RaindropAromatherapyPage() {
   const [faqs, setFaqs] = useState([
@@ -356,10 +356,29 @@ export default function RaindropAromatherapyPage() {
         What Our Clients Say
       </h2>
       <div className="w-20 h-1 bg-primary mx-auto mt-4 rounded-full"></div>
+    </div>   
+
+    <div className="grid md:grid-cols-3 gap-8">
+      {testimonials.map((t, idx) => (
+        <div
+          key={idx}
+          className="relative bg-white p-8 rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2"
+        >
+          {/* Decorative Quote */}
+          <span className="absolute -top-6 left-6 text-6xl text-primary/20 font-serif">
+            "
+          </span>
+
+          <p className="text-lg md:text-xl italic text-gray-700 leading-relaxed mb-6">
+            {t.quote}
+          </p>
+
+          <div className="border-t pt-4">
+            <p className="font-semibold text-gray-800">{t.author}</p>
+          </div>
+        </div>
+      ))}
     </div>
-    <GoogleReviews />
-
-
   </div>
 </section>
     </div>
