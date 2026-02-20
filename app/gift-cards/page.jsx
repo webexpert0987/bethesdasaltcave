@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 
 export default function GiftCardsPage() {
   const [giftCards, setGiftCards] = useState([]);  
+  const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const cardsPerPage = 6;
   // Pagination calculations
@@ -16,9 +17,13 @@ export default function GiftCardsPage() {
 
   useEffect(() => {
     async function fetchGiftCards() {
-      const res = await fetch("/api/admin/gift-cards");
-      const data = await res.json();
-      setGiftCards(data.giftCards);
+      try {
+        const res = await fetch("/api/admin/gift-cards");
+        const data = await res.json();
+        setGiftCards(data.giftCards || []);
+      } finally {
+        setIsLoading(false);
+      }
     }
 
     fetchGiftCards();
@@ -38,32 +43,38 @@ export default function GiftCardsPage() {
 
       {/* Gift Card Options */}
       <section className="pt-5 py-24 max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-12">
-        {currentCards.map((card) => (
-          <div
-            key={card._id}
-            className="bg-white rounded-xl shadow-md p-8 flex flex-col items-center text-center"
-          >
-            <Image
-              src={card.image}
-              alt={card.name}
-              width={300}
-              height={150}
-              className="rounded-lg mb-6"
-            />
-            <h2 className="text-xl font-semibold mb-2">{card.name}</h2>
-            <p className="text-gray-600 mb-4">{card.description}</p>
-            <p className="text-2xl font-semibold mb-6">${card.price}</p>
-
-            <Link
-              href={`/checkout?title=${encodeURIComponent(
-                card.name
-              )}&price=${card.price}`}
-              className="bg-primary hover:bg-primary-dark transition-all duration-300 px-12 py-5 font-semibold rounded-full inline-block text-white"
-            >
-              Buy Now
-            </Link>
+        {isLoading ? (
+          <div className="col-span-full text-center text-lg text-gray-600">
+            Loading Gift Cards...
           </div>
-        ))}
+        ) : (
+          currentCards.map((card) => (
+            <div
+              key={card._id}
+              className="bg-white rounded-xl shadow-md p-8 flex flex-col items-center text-center"
+            >
+              <Image
+                src={card.image}
+                alt={card.name}
+                width={300}
+                height={150}
+                className="rounded-lg mb-6"
+              />
+              <h2 className="text-xl font-semibold mb-2">{card.name}</h2>
+              <p className="text-gray-600 mb-4">{card.description}</p>
+              <p className="text-2xl font-semibold mb-6">${card.price}</p>
+
+              <Link
+                href={`/checkout?title=${encodeURIComponent(
+                  card.name
+                )}&price=${card.price}`}
+                className="bg-primary hover:bg-primary-dark transition-all duration-300 px-12 py-5 font-semibold rounded-full inline-block text-white"
+              >
+                Buy Now
+              </Link>
+            </div>
+          ))
+        )}
         
       </section>
       {/* Pagination */}
